@@ -1,1 +1,0 @@
-foo = backtracking_descent();
