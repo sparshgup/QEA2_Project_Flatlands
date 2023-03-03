@@ -25,7 +25,7 @@ function [R] = backtracking_descent()
     while(norm(eval_grad(R(end,:))) > tolerance)
         cur_pos = R(end,:);
         lambda = 1.0;
-        % quagradic decay with respect to the gradient
+        % quadratic decay with respect to the gradient
         while(eval_gain(cur_pos + lambda*eval_grad(cur_pos)) < eval_gain(cur_pos) + alpha*lambda*norm(eval_grad(cur_pos)).^2)
             lambda = lambda*beta; % decay the step
         end
