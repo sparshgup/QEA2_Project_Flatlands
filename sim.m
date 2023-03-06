@@ -1,6 +1,6 @@
 clear all; close all; clc;
 
-[sensors,vels]= neatoSim(-2, 0, 0, 1); % create the simulator
+[sensors,vels]= customSim(-2, 0, 0, 1); % create the simulator
 pause(5); % give the simulator a few seconds to load
 
 

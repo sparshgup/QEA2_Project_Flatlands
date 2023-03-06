@@ -1,4 +1,9 @@
-function [neatoSensors, neatoVelocities] = customNeato(ip)
+function [neatoSensors, neatoVelocities] = neato(ip,varargin)
+if nargin>1
+    port_num=varargin{1};
+else
+    port_num=7921;
+end
 neatoSensors = NeatoSensors();
 neatoVelocities = NeatoVelocities();
 % This script provides a visualization and teleop interface to the Neato
@@ -113,7 +118,8 @@ neatoVelocities = NeatoVelocities();
     t = tic;
     sock = tcpclient(ip, 7777);
     pause(1);
-    writeline(sock, 'protocolpreference True 7921 False');
+    txt2=sprintf('protocolpreference True %d False',port_num);
+    writeline(sock, txt2);
     pause(1);
     writeline(sock, 'testmode on');
     pause(1);
@@ -137,11 +143,11 @@ neatoVelocities = NeatoVelocities();
         end
         try
             if length(neatoVelocities.lrWheelVelocitiesInMetersPerSecond) == 2
-                setMotors(1000*neatoVelocities.lrWheelVelocitiesInMetersPerSecond(1), ...
-                    1000*neatoVelocities.lrWheelVelocitiesInMetersPerSecond(2), ...
-                    1000*max(abs(neatoVelocities.lrWheelVelocitiesInMetersPerSecond)));
+                setMotors(round(1000*neatoVelocities.lrWheelVelocitiesInMetersPerSecond(1)), ...
+                    round(1000*neatoVelocities.lrWheelVelocitiesInMetersPerSecond(2)), ...
+                    round(1000*max(abs(neatoVelocities.lrWheelVelocitiesInMetersPerSecond))));
             end
-            packet = judp('receive', 7921, 1600);
+            packet = judp('receive', port_num, 1600);
 
             accelAsDoubles = double(typecast(packet(1:24), 'single')');
             motorsAsDoubles = typecast(packet(25:40),'double')'/1000.0;

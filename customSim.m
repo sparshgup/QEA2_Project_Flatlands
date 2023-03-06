@@ -1,8 +1,28 @@
-function [neatoSensors, neatoVelocities] = customSim()
+function [neatoSensors, neatoVelocities] = neatoSim(varargin)
+%enter the pose as x,y,theta
 neatoSensors = NeatoSensors();
 neatoVelocities = NeatoVelocities();
+if nargin>1
+    x=varargin{1};
+    y=varargin{2};
+    theta=varargin{3};
+else
+    x=0.0;
+    y=0.0;
+    theta=0.0;
+end
+if nargin < 4
+    env=0;
+else
+    env=varargin{4};
+end
+boundary=5;
+%%Define flatland environment
+[x1,y1] = meshgrid(linspace(-boundary,boundary,100),linspace(-boundary,boundary,100));
+flatland = 16*exp(-x1.^2/2 - y1.^2/2 - x1.*y1/2) + 4*exp(-(x1+1.5).^2-(y1+2.5).^2);
+
 % x, y, theta, vL, vR, encoderL, encoderR
-robotState = [0.0; 0.0; 0.0; 0.0; 0.0; 0.0; 0.0];
+robotState = [x; y; theta; 0.0; 0.0; 0.0; 0.0];
 timeStamp = [];     % set to empty until we've gone through loop once
 deltaT = [];
 robotWidth = 0.35;   % just for visualization purposes (didn't actually measure)
@@ -115,7 +135,7 @@ robotWidth = 0.35;   % just for visualization purposes (didn't actually measure)
         'String','Angular Velocity Scale');
 
     set(f,'WindowKeyPressFcn', @keyPressedFunction);
-    BASE_WIDTH = 248;    % millimeters
+    BASE_WIDTH = 245;    % millimeters
     MAX_SPEED = 300;     % millimeters/second
     T = timer('Period',0.1,... %period
         'ExecutionMode','fixedRate',... %{singleShot,fixedRate,fixedSpacing,fixedDelay}
@@ -157,11 +177,17 @@ robotWidth = 0.35;   % just for visualization purposes (didn't actually measure)
             set(0, 'CurrentFigure', fTopDown);
             P = drawRobotBody(robotState);
             set(gca,'Nextplot','ReplaceChildren');
+            if env==1
+                contour(x1, y1, flatland,'LineWidth',3)
+                hold on
+            end   
             plot(P);
             hold on;
             quiver(robotState(1), robotState(2), cos(robotState(3)), sin(robotState(3)), 'color', 'r', 'maxheadsize', 2, 'linewidth', 1);
-            xlim([-5 5]);
-            ylim([-5 5]);
+            xlim([-boundary boundary]);
+            ylim([-boundary boundary]);
+            axis equal;
+            grid on;
             prev = gcf;
             set(0,'CurrentFigure',f);
             set(gca,'Nextplot','ReplaceChildren');
