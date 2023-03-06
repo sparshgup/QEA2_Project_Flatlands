@@ -124,7 +124,7 @@ neatoVelocities = NeatoVelocities();
     writeline(sock, 'testmode on');
     pause(1);
     writeline(sock, 'setldsrotation on');
-    T = timer('Period',0.2,... %period
+    T = timer('Period',0.1,... %period
         'ExecutionMode','fixedRate',... %{singleShot,fixedRate,fixedSpacing,fixedDelay}
         'BusyMode','drop',... %{drop, error, queue}
         'TasksToExecute',inf,...          
