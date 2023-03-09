@@ -1,6 +1,7 @@
-# QEA2_Project_Flatlands
+# Quantitative Engineering Analysis 2 Project: Flatlands
 
-Flatlands (Partial Derivatives)
+Flatlands (Gradient Ascent)
+
 
 ## A Simulation of the Neato
 
